@@ -1,0 +1,5 @@
+var a, b:integer;
+var a, b, c, d, e, f:integer; g, h, i:char;
+    var                a, b     :integer    ;
+var a,b,c,d,e,f:integer;g,h,i:char;
+var a:integer; b:char; c:integer; d:boolean; e:text;
