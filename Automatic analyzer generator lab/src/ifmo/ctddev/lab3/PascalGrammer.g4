@@ -1,8 +1,8 @@
 grammar PascalGrammer;
 
 @parser::header {
-    import ifmo.ctddev.lab3.maps.VarTypes;
-    import ifmo.ctddev.lab3.maps.Functions;
+import ifmo.ctddev.lab3.maps.VarTypes;
+import ifmo.ctddev.lab3.maps.Functions;
 }
 
 program returns [String code]
@@ -50,7 +50,7 @@ type returns [String code]
 
 mainPart returns [String code]
     : readWritePart {$code = $readWritePart.code;}
-//    | assignmentPart
+    | assignmentPart {$code = $assignmentPart.code;}
     ;
 
 readWritePart returns [String code]
@@ -59,8 +59,12 @@ readWritePart returns [String code]
       }
     ;
 
-assignmentPart
-    :
+assignmentPart returns [String code]
+    : identifier {$code = "\t" + $identifier.text + " = ";} ASSIGNMENT
+      (identifier {$code += $identifier.text;}
+       | digit {$code += $digit.text;}
+       | simpleExpression {$code += $simpleExpression.code;})
+      SEMI {$code += ";\n";}
     ;
 
 funcName returns [String name]
@@ -70,8 +74,18 @@ funcName returns [String name]
     | WRITELN {$name = "writeln";}
     ;
 
+simpleExpression returns [String code]
+    : (identifier {$code = $identifier.text;} | digit {$code = $digit.text;})
+      ((PLUS {$code += " + ";} | MINUS {$code += " - ";} | MUL {$code += " * ";} | DIV {$code += " / ";})
+      (identifier {$code += $identifier.text;} | digit {$code += $digit.text;}))+
+    ;
+
 identifier
     : IDENTIFIER
+    ;
+
+digit
+    : DIGIT
     ;
 
 SEMI
@@ -97,6 +111,30 @@ LPAREN
 
 RPAREN
    : ')'
+   ;
+
+EQUALITY
+   : '='
+   ;
+
+ASSIGNMENT
+   : ':='
+   ;
+
+PLUS
+   : '+'
+   ;
+
+MINUS
+   : '-'
+   ;
+
+MUL
+   : '*'
+   ;
+
+DIV
+   : '/'
    ;
 
 PROGRAM
@@ -161,6 +199,10 @@ WRITELN
 
 IDENTIFIER
    : ('a' .. 'z' | 'A' .. 'Z') ('a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_')*
+   ;
+
+DIGIT
+   : ('0' .. '9')+
    ;
 
 fragment A

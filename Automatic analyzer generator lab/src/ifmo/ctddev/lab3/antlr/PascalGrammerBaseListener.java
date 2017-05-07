@@ -1,8 +1,8 @@
 // Generated from C:/Users/Anna/Desktop/Lab3/src/ifmo/ctddev/lab3\PascalGrammer.g4 by ANTLR 4.7
 package ifmo.ctddev.lab3.antlr;
 
-    import ifmo.ctddev.lab3.maps.VarTypes;
-    import ifmo.ctddev.lab3.maps.Functions;
+import ifmo.ctddev.lab3.maps.VarTypes;
+import ifmo.ctddev.lab3.maps.Functions;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -152,6 +152,18 @@ public class PascalGrammerBaseListener implements PascalGrammerListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSimpleExpression(PascalGrammerParser.SimpleExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSimpleExpression(PascalGrammerParser.SimpleExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIdentifier(PascalGrammerParser.IdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -159,6 +171,18 @@ public class PascalGrammerBaseListener implements PascalGrammerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIdentifier(PascalGrammerParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDigit(PascalGrammerParser.DigitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDigit(PascalGrammerParser.DigitContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

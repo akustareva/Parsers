@@ -43,10 +43,6 @@ public class Functions {
     private static String createFormatSpecifiers(String ... args) {
         StringJoiner joiner = new StringJoiner(" ");
         for (String arg : args) {
-            if (arg.startsWith("\'") && arg.endsWith("\'")) {
-                joiner.add("%s");
-                continue;
-            }
             String type = VarTypes.getVarType(arg);
             if ("char".equals(type)) {
                 joiner.add("%c");

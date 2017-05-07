@@ -1,8 +1,8 @@
 // Generated from C:/Users/Anna/Desktop/Lab3/src/ifmo/ctddev/lab3\PascalGrammer.g4 by ANTLR 4.7
 package ifmo.ctddev.lab3.antlr;
 
-    import ifmo.ctddev.lab3.maps.VarTypes;
-    import ifmo.ctddev.lab3.maps.Functions;
+import ifmo.ctddev.lab3.maps.VarTypes;
+import ifmo.ctddev.lab3.maps.Functions;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -122,6 +122,16 @@ public interface PascalGrammerListener extends ParseTreeListener {
 	 */
 	void exitFuncName(PascalGrammerParser.FuncNameContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PascalGrammerParser#simpleExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterSimpleExpression(PascalGrammerParser.SimpleExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PascalGrammerParser#simpleExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitSimpleExpression(PascalGrammerParser.SimpleExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PascalGrammerParser#identifier}.
 	 * @param ctx the parse tree
 	 */
@@ -131,4 +141,14 @@ public interface PascalGrammerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIdentifier(PascalGrammerParser.IdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PascalGrammerParser#digit}.
+	 * @param ctx the parse tree
+	 */
+	void enterDigit(PascalGrammerParser.DigitContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PascalGrammerParser#digit}.
+	 * @param ctx the parse tree
+	 */
+	void exitDigit(PascalGrammerParser.DigitContext ctx);
 }
