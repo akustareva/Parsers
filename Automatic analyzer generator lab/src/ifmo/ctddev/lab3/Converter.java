@@ -18,7 +18,6 @@ public class Converter {
         }
         String fileName = args[0];
         CharStream input = CharStreams.fromFileName(fileName);
-//        System.out.println(input);
         PascalGrammerLexer pascalLexer = new PascalGrammerLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(pascalLexer);
         PascalGrammerParser pascalParser = new PascalGrammerParser(tokens);

@@ -1,5 +1,10 @@
 grammar PascalGrammer;
 
+@parser::header {
+    import ifmo.ctddev.lab3.maps.VarTypes;
+    import ifmo.ctddev.lab3.maps.Functions;
+}
+
 program returns [String code]
     : (programHeading)? {
        $code = "#include <stdlib.h>\n";
@@ -9,6 +14,7 @@ program returns [String code]
       (varDeclarations {$code += $varDeclarations.code;})*
       programBody {
            $code += "int main() {\n";
+           $code += $programBody.code;
            $code += "\treturn 0;\n";
            $code += "}\n";
       }
@@ -22,15 +28,14 @@ varDeclarations returns [String code]
     : VAR {$code = "";} (varsDeclarationBlock {$code += $varsDeclarationBlock.code + "\n";})+
     ;
 
-programBody
-    : BEGIN END DOT
-    ;
-
-identifier
-    : IDENTIFIER
+programBody returns [String code]
+    : BEGIN {$code = "";} (mainPart {$code += $mainPart.code;})* END DOT
     ;
 
 varsDeclarationBlock returns [String code]
+    @after {
+        VarTypes.addVars($ctx.type().code, $ctx.listOfIdentifiers().code.split(", "));
+    }
     : listOfIdentifiers COLON type SEMI {$code = $type.code + " " + $listOfIdentifiers.code + ";";}
     ;
 
@@ -40,9 +45,33 @@ listOfIdentifiers returns [String code]
 
 type returns [String code]
     : CHAR {$code = "char";} | BOOLEAN {$code = "bool";} 
-    | INTEGER {$code = "int";} | REAL {$code = "float";}
-    | DOUBLE {$code = "double";} | EXTENDED {$code = "long double";}
-    | STRING {$code = "char *";}
+    | INTEGER {$code = "int";} | DOUBLE {$code = "double";}
+    ;
+
+mainPart returns [String code]
+    : readWritePart {$code = $readWritePart.code;}
+//    | assignmentPart
+    ;
+
+readWritePart returns [String code]
+    : funcName LPAREN listOfIdentifiers RPAREN SEMI {
+        $code = Functions.convertFuncToC($funcName.name, $listOfIdentifiers.code.split(", "));
+      }
+    ;
+
+assignmentPart
+    :
+    ;
+
+funcName returns [String name]
+    : READ {$name = "read";}
+    | READLN {$name = "readln";}
+    | WRITE {$name = "write";}
+    | WRITELN {$name = "writeln";}
+    ;
+
+identifier
+    : IDENTIFIER
     ;
 
 SEMI
@@ -61,21 +90,30 @@ DOT
    : '.'
    ;
 
+LPAREN
+   : '('
+   ;
+
+
+RPAREN
+   : ')'
+   ;
+
 PROGRAM
-    : P R O G R A M
-    ;
+   : P R O G R A M
+   ;
 
 VAR
-    : V A R
-    ;
+   : V A R
+   ;
 
 BEGIN
    : B E G I N
    ;
 
 END
-    : E N D
-    ;
+   : E N D
+   ;
 
 BOOLEAN
    : B O O L E A N
@@ -105,13 +143,29 @@ STRING
    : S T R I N G
    ;
 
+READ
+   : R E A D
+   ;
+
+READLN
+   : R E A D L N
+   ;
+
+WRITE
+   : W R I T E
+   ;
+
+WRITELN
+   : W R I T E L N
+   ;
+
 IDENTIFIER
-    : ('a' .. 'z' | 'A' .. 'Z') ('a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_')*
-    ;
+   : ('a' .. 'z' | 'A' .. 'Z') ('a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_')*
+   ;
 
 fragment A
-       : ('a' | 'A')
-       ;
+   : ('a' | 'A')
+   ;
 
 fragment B
    : ('b' | 'B')
