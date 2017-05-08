@@ -54,15 +54,17 @@ mainPart returns [String code]
     ;
 
 readWritePart returns [String code]
-    : funcName LPAREN listOfIdentifiers RPAREN SEMI {
-        $code = Functions.convertFuncToC($funcName.name, $listOfIdentifiers.code.split(", "));
-      }
+    @after {
+        $code = Functions.convertFuncToC($ctx.funcName().name,
+        $ctx.listOfIdentifiers() == null ? new String[0] : $ctx.listOfIdentifiers().code.split(", "));
+    }
+    : funcName LPAREN (listOfIdentifiers)? RPAREN SEMI
     ;
 
 assignmentPart returns [String code]
     : identifier {$code = "\t" + $identifier.text + " = ";} ASSIGNMENT
       (identifier {$code += $identifier.text;}
-       | digit {$code += $digit.text;}
+       | number {$code += $number.text;}
        | simpleExpression {$code += $simpleExpression.code;})
       SEMI {$code += ";\n";}
     ;
@@ -75,17 +77,17 @@ funcName returns [String name]
     ;
 
 simpleExpression returns [String code]
-    : (identifier {$code = $identifier.text;} | digit {$code = $digit.text;})
+    : (identifier {$code = $identifier.text;} | number {$code = $number.text;})
       ((PLUS {$code += " + ";} | MINUS {$code += " - ";} | MUL {$code += " * ";} | DIV {$code += " / ";})
-      (identifier {$code += $identifier.text;} | digit {$code += $digit.text;}))+
+      (identifier {$code += $identifier.text;} | number {$code += $number.text;}))+
     ;
 
 identifier
     : IDENTIFIER
     ;
 
-digit
-    : DIGIT
+number
+    : NUMBER
     ;
 
 SEMI
@@ -201,7 +203,7 @@ IDENTIFIER
    : ('a' .. 'z' | 'A' .. 'Z') ('a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_')*
    ;
 
-DIGIT
+NUMBER
    : ('0' .. '9')+
    ;
 

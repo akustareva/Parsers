@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-int i;
+int i, i1, i2;
 char c;
 double d;
 int main() {
@@ -14,5 +14,8 @@ int main() {
 	printf("%c\n", c);
 	printf("%d %f", i, d);
 	printf("%c %f\n", c, d);
+	i = 5;
+	i1 = i;
+	i2 = 876 + i * i1 + i1 / 6;
 	return 0;
 }

@@ -176,13 +176,13 @@ public class PascalGrammerBaseListener implements PascalGrammerListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDigit(PascalGrammerParser.DigitContext ctx) { }
+	@Override public void enterNumber(PascalGrammerParser.NumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDigit(PascalGrammerParser.DigitContext ctx) { }
+	@Override public void exitNumber(PascalGrammerParser.NumberContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

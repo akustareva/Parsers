@@ -25,4 +25,8 @@ public class VarTypes {
     public static Map<String, String> getVarTypes() {
         return varTypes;
     }
+
+    public static void resetVarTypes() {
+        varTypes = new HashMap<>();
+    }
 }

@@ -20,7 +20,7 @@ public class PascalGrammerLexer extends Lexer {
 		SEMI=1, COLON=2, COMMA=3, DOT=4, LPAREN=5, RPAREN=6, EQUALITY=7, ASSIGNMENT=8, 
 		PLUS=9, MINUS=10, MUL=11, DIV=12, PROGRAM=13, VAR=14, BEGIN=15, END=16, 
 		BOOLEAN=17, CHAR=18, INTEGER=19, REAL=20, DOUBLE=21, EXTENDED=22, STRING=23, 
-		READ=24, READLN=25, WRITE=26, WRITELN=27, IDENTIFIER=28, DIGIT=29, WS=30, 
+		READ=24, READLN=25, WRITE=26, WRITELN=27, IDENTIFIER=28, NUMBER=29, WS=30, 
 		OLD_STYLE_COMMENT=31, COMMENT=32;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -34,7 +34,7 @@ public class PascalGrammerLexer extends Lexer {
 		"SEMI", "COLON", "COMMA", "DOT", "LPAREN", "RPAREN", "EQUALITY", "ASSIGNMENT", 
 		"PLUS", "MINUS", "MUL", "DIV", "PROGRAM", "VAR", "BEGIN", "END", "BOOLEAN", 
 		"CHAR", "INTEGER", "REAL", "DOUBLE", "EXTENDED", "STRING", "READ", "READLN", 
-		"WRITE", "WRITELN", "IDENTIFIER", "DIGIT", "A", "B", "C", "D", "E", "F", 
+		"WRITE", "WRITELN", "IDENTIFIER", "NUMBER", "A", "B", "C", "D", "E", "F", 
 		"G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", 
 		"U", "V", "W", "X", "Y", "Z", "WS", "OLD_STYLE_COMMENT", "COMMENT"
 	};
@@ -47,7 +47,7 @@ public class PascalGrammerLexer extends Lexer {
 		null, "SEMI", "COLON", "COMMA", "DOT", "LPAREN", "RPAREN", "EQUALITY", 
 		"ASSIGNMENT", "PLUS", "MINUS", "MUL", "DIV", "PROGRAM", "VAR", "BEGIN", 
 		"END", "BOOLEAN", "CHAR", "INTEGER", "REAL", "DOUBLE", "EXTENDED", "STRING", 
-		"READ", "READLN", "WRITE", "WRITELN", "IDENTIFIER", "DIGIT", "WS", "OLD_STYLE_COMMENT", 
+		"READ", "READLN", "WRITE", "WRITELN", "IDENTIFIER", "NUMBER", "WS", "OLD_STYLE_COMMENT", 
 		"COMMENT"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);

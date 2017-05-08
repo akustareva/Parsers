@@ -142,13 +142,13 @@ public interface PascalGrammerListener extends ParseTreeListener {
 	 */
 	void exitIdentifier(PascalGrammerParser.IdentifierContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PascalGrammerParser#digit}.
+	 * Enter a parse tree produced by {@link PascalGrammerParser#number}.
 	 * @param ctx the parse tree
 	 */
-	void enterDigit(PascalGrammerParser.DigitContext ctx);
+	void enterNumber(PascalGrammerParser.NumberContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PascalGrammerParser#digit}.
+	 * Exit a parse tree produced by {@link PascalGrammerParser#number}.
 	 * @param ctx the parse tree
 	 */
-	void exitDigit(PascalGrammerParser.DigitContext ctx);
+	void exitNumber(PascalGrammerParser.NumberContext ctx);
 }
