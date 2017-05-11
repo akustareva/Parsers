@@ -12,6 +12,7 @@ program returns [String code]
        $code += "#include <stdbool.h>\n\n";
       }
       (varDeclarations {$code += $varDeclarations.code;})*
+      (constDeclarations {$code += $constDeclarations.code;})*
       programBody {
            $code += "int main() {\n";
            $code += $programBody.code;
@@ -28,6 +29,10 @@ varDeclarations returns [String code]
     : VAR {$code = "";} (varsDeclarationBlock {$code += $varsDeclarationBlock.code + "\n";})+
     ;
 
+constDeclarations returns [String code]
+    : CONST {$code = "";} (constDeclarationBlock {$code += $constDeclarationBlock.code;})+
+    ;
+
 programBody returns [String code]
     : BEGIN {$code = "";} (mainPart {$code += $mainPart.code;})* END DOT
     ;
@@ -37,6 +42,15 @@ varsDeclarationBlock returns [String code]
         VarTypes.addVars($ctx.type().code, $ctx.listOfIdentifiers().code.split(", "));
     }
     : listOfIdentifiers COLON type SEMI {$code = $type.code + " " + $listOfIdentifiers.code + ";";}
+    ;
+
+constDeclarationBlock returns [String code]
+    @after {
+        VarTypes.addVars($ctx.type().code, $ctx.identifier().getText());
+    }
+    : identifier COLON type EQUALITY number SEMI {
+        $code = "const " + $type.code + " " + $identifier.text + " = " + $number.text + ";\n";
+      }
     ;
 
 listOfIdentifiers returns [String code]
@@ -153,6 +167,10 @@ BEGIN
 
 END
    : E N D
+   ;
+
+CONST
+   : C O N S T
    ;
 
 BOOLEAN

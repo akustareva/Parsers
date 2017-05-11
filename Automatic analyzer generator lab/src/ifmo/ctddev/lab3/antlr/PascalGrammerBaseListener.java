@@ -56,6 +56,18 @@ public class PascalGrammerBaseListener implements PascalGrammerListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterConstDeclarations(PascalGrammerParser.ConstDeclarationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConstDeclarations(PascalGrammerParser.ConstDeclarationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterProgramBody(PascalGrammerParser.ProgramBodyContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -75,6 +87,18 @@ public class PascalGrammerBaseListener implements PascalGrammerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVarsDeclarationBlock(PascalGrammerParser.VarsDeclarationBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConstDeclarationBlock(PascalGrammerParser.ConstDeclarationBlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConstDeclarationBlock(PascalGrammerParser.ConstDeclarationBlockContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

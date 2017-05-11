@@ -42,6 +42,16 @@ public interface PascalGrammerListener extends ParseTreeListener {
 	 */
 	void exitVarDeclarations(PascalGrammerParser.VarDeclarationsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PascalGrammerParser#constDeclarations}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstDeclarations(PascalGrammerParser.ConstDeclarationsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PascalGrammerParser#constDeclarations}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstDeclarations(PascalGrammerParser.ConstDeclarationsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PascalGrammerParser#programBody}.
 	 * @param ctx the parse tree
 	 */
@@ -61,6 +71,16 @@ public interface PascalGrammerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVarsDeclarationBlock(PascalGrammerParser.VarsDeclarationBlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PascalGrammerParser#constDeclarationBlock}.
+	 * @param ctx the parse tree
+	 */
+	void enterConstDeclarationBlock(PascalGrammerParser.ConstDeclarationBlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PascalGrammerParser#constDeclarationBlock}.
+	 * @param ctx the parse tree
+	 */
+	void exitConstDeclarationBlock(PascalGrammerParser.ConstDeclarationBlockContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PascalGrammerParser#listOfIdentifiers}.
 	 * @param ctx the parse tree

@@ -59,6 +59,9 @@ public class Parser {
         if (!analyzer.hasNextToken()) {
             subTrees.add(new Tree("eps"));
         } else {
+            if (analyzer.seeNextToken() == Token.Var) {
+                subTrees.add(new Tree(analyzer.getNextToken().toString()));
+            }
             subTrees.add(parseVarsDeclarationBlock());
         }
         return new Tree("T\'", subTrees);
