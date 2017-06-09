@@ -1,0 +1,7 @@
+@header {
+package ifmo.ctddev.lab4.generated;
+import java.io.PrintWriter;
+}
+@members {
+    private String test;
+}
