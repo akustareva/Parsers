@@ -151,4 +151,14 @@ public interface GrammarOfGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAttrName(GrammarOfGrammarParser.AttrNameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(GrammarOfGrammarParser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(GrammarOfGrammarParser.IdentifierContext ctx);
 }

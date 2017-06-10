@@ -1,9 +1,6 @@
 package ifmo.ctddev.lab4;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Rule {
     private String name;
@@ -35,6 +32,24 @@ public class Rule {
         addReturnedAttr(name, Type.getTypeByName(type));
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(name);
+        StringJoiner joiner = new StringJoiner(", ", " (", ")");
+        for (Map.Entry<String, Type> attr : localAttrs.entrySet()) {
+            joiner.add(attr.getValue() + " " + attr.getKey());
+        }
+        builder.append(joiner.toString());
+        joiner = new StringJoiner(", ", " [", "] ");
+        for (Map.Entry<String, Type> attr : returnedAttrs.entrySet()) {
+            joiner.add(attr.getValue() + " " + attr.getKey());
+        }
+        builder.append(joiner.toString());
+        builder.append(": ");
+        // TODO: add productions
+        return builder.toString();
+    }
+
     public enum Type {
         VOID("void"),
         STRING("String"),
@@ -45,7 +60,7 @@ public class Rule {
         private static Map<String, Type> typeByName = new HashMap<>();
 
         static {
-            for (Type rType : typeByName.values()) {
+            for (Type rType : Type.values()) {
                 typeByName.put(rType.toString(), rType);
             }
         }

@@ -5,3 +5,19 @@ import java.io.PrintWriter;
 @members {
     private String test;
 }
+
+gram
+    : next
+    ;
+
+next (Integer a, String b) [String code]
+    : TERM_TEST TERM_TEST2
+    ;
+
+TERM_TEST
+    : 'abs'
+    ;
+
+TERM_TEST2
+    : 'lrt8gkgk'
+    ;

@@ -53,7 +53,7 @@ public class Generator {
             @Override
             public void enterTermRuleLabel(GrammarOfGrammarParser.TermRuleLabelContext ctx) {
                 Rule rule = addTerminalRule(ctx.TERM_NAME().getText());
-
+                // TODO
             }
 
             @Override
@@ -69,10 +69,18 @@ public class Generator {
                         rule.addReturnedAttr(returnedAttr.attrName().getText(), returnedAttr.attrType().getText());
                     }
                 }
-
+                // TODO
             }
         };
         walker.walk(listener, parser.gram());
+        if (!nonTerminals.containsKey(startRule)) {
+            throw new RuntimeException("No such rule: " + startRule);
+        }
+
+        System.err.println("TERMINAL RULES:");
+        terminals.values().forEach(System.err::println);
+        System.err.println("NON_TERMINAL RULES:");
+        nonTerminals.values().forEach(System.err::println);
     }
 
     public void generateFiles() throws FileNotFoundException {

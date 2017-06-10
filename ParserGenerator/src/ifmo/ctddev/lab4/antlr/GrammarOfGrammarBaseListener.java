@@ -179,6 +179,18 @@ public class GrammarOfGrammarBaseListener implements GrammarOfGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAttrName(GrammarOfGrammarParser.AttrNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdentifier(GrammarOfGrammarParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifier(GrammarOfGrammarParser.IdentifierContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

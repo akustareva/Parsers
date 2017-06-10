@@ -31,7 +31,7 @@ nonterminalProduction
 
 nontermVariations
     : TERM_NAME (ASTERISK | PLUS | QUESTION_MARK)?
-    | NON_TERM_NAME args
+    | NON_TERM_NAME args?
     | LEFT_PARENTHESIS nontermVariations JAVA_CODE RIGHT_PARENTHESIS (ASTERISK | PLUS | QUESTION_MARK)
     ;
 
@@ -48,11 +48,16 @@ args
     ;
 
 attrType
-    : IDENTIFIER
+    : identifier
     ;
 
 attrName
-    : IDENTIFIER
+    : identifier
+    ;
+
+identifier
+    : NON_TERM_NAME
+    | TERM_NAME
     ;
 
 NON_TERM_NAME
@@ -61,10 +66,6 @@ NON_TERM_NAME
 
 TERM_NAME
     : [A-Z][a-zA-Z_0-9]*
-    ;
-
-IDENTIFIER
-    : [a-zA-Z][a-zA-Z0-9_]*
     ;
 
 STRING
