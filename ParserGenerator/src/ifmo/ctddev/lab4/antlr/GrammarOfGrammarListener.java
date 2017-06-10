@@ -72,35 +72,35 @@ public interface GrammarOfGrammarListener extends ParseTreeListener {
 	 */
 	void exitLocalAttrs(GrammarOfGrammarParser.LocalAttrsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#returnedAttrs}.
+	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#returnedAttr}.
 	 * @param ctx the parse tree
 	 */
-	void enterReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx);
+	void enterReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#returnedAttrs}.
+	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#returnedAttr}.
 	 * @param ctx the parse tree
 	 */
-	void exitReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx);
+	void exitReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#nonterminalProduction}.
+	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#nonTerminalProduction}.
 	 * @param ctx the parse tree
 	 */
-	void enterNonterminalProduction(GrammarOfGrammarParser.NonterminalProductionContext ctx);
+	void enterNonTerminalProduction(GrammarOfGrammarParser.NonTerminalProductionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#nonterminalProduction}.
+	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#nonTerminalProduction}.
 	 * @param ctx the parse tree
 	 */
-	void exitNonterminalProduction(GrammarOfGrammarParser.NonterminalProductionContext ctx);
+	void exitNonTerminalProduction(GrammarOfGrammarParser.NonTerminalProductionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#nontermVariations}.
+	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#nonTermVariations}.
 	 * @param ctx the parse tree
 	 */
-	void enterNontermVariations(GrammarOfGrammarParser.NontermVariationsContext ctx);
+	void enterNonTermVariations(GrammarOfGrammarParser.NonTermVariationsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#nontermVariations}.
+	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#nonTermVariations}.
 	 * @param ctx the parse tree
 	 */
-	void exitNontermVariations(GrammarOfGrammarParser.NontermVariationsContext ctx);
+	void exitNonTermVariations(GrammarOfGrammarParser.NonTermVariationsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#terminalProduction}.
 	 * @param ctx the parse tree

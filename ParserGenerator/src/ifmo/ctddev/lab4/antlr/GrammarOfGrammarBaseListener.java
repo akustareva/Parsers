@@ -88,37 +88,37 @@ public class GrammarOfGrammarBaseListener implements GrammarOfGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx) { }
+	@Override public void enterReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx) { }
+	@Override public void exitReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNonterminalProduction(GrammarOfGrammarParser.NonterminalProductionContext ctx) { }
+	@Override public void enterNonTerminalProduction(GrammarOfGrammarParser.NonTerminalProductionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNonterminalProduction(GrammarOfGrammarParser.NonterminalProductionContext ctx) { }
+	@Override public void exitNonTerminalProduction(GrammarOfGrammarParser.NonTerminalProductionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNontermVariations(GrammarOfGrammarParser.NontermVariationsContext ctx) { }
+	@Override public void enterNonTermVariations(GrammarOfGrammarParser.NonTermVariationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNontermVariations(GrammarOfGrammarParser.NontermVariationsContext ctx) { }
+	@Override public void exitNonTermVariations(GrammarOfGrammarParser.NonTermVariationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

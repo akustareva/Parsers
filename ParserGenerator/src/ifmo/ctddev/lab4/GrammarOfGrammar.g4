@@ -13,26 +13,25 @@ members
     ;
 
 grammarRule
-    : NON_TERM_NAME localAttrs? returnedAttrs? COLON nonterminalProduction (PIPE nonterminalProduction)* SEMI # nonTermRuleLabel
-    | TERM_NAME COLON terminalProduction (PIPE terminalProduction)* SEMI                                      # termRuleLabel
+    : NON_TERM_NAME localAttrs? returnedAttr? COLON nonTerminalProduction (PIPE nonTerminalProduction)* SEMI # nonTermRuleLabel
+    | TERM_NAME COLON terminalProduction (PIPE terminalProduction)* SEMI                                     # termRuleLabel
     ;
 
 localAttrs
     : LEFT_PARENTHESIS attr (COMMA attr)* RIGHT_PARENTHESIS
     ;
 
-returnedAttrs
-    : SQUARE_BR_LEFT attr (COMMA attr)* SQUARE_BR_RIGHT
+returnedAttr
+    : SQUARE_BR_LEFT attr SQUARE_BR_RIGHT
     ;
 
-nonterminalProduction
-    : (nontermVariations JAVA_CODE?)+
+nonTerminalProduction
+    : nonTermVariations* JAVA_CODE?
     ;
 
-nontermVariations
+nonTermVariations
     : TERM_NAME (ASTERISK | PLUS | QUESTION_MARK)?
     | NON_TERM_NAME args?
-    | LEFT_PARENTHESIS nontermVariations JAVA_CODE RIGHT_PARENTHESIS (ASTERISK | PLUS | QUESTION_MARK)
     ;
 
 terminalProduction
@@ -144,6 +143,14 @@ COLON
 
 COMMA
    : ','
+   ;
+
+OLD_STYLE_COMMENT
+   : '(*' .*? '*)' -> skip
+   ;
+
+COMMENT
+   : '{' .*? '}' -> skip
    ;
 
 WS

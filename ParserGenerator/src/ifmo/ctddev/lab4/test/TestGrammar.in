@@ -15,9 +15,9 @@ next (Integer a, String b) [String code]
     ;
 
 TERM_TEST
-    : 'abs'
+    : 'test'
     ;
 
 TERM_TEST2
-    : 'lrt8gkgk'
+    : 'test ' '2'
     ;

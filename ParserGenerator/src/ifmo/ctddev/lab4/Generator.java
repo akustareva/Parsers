@@ -21,6 +21,7 @@ public class Generator {
     private String EXTENSION = ".java";
     private String LEXER = "Lexer";
     private String PARSER = "Parser";
+    private static final String EPS = "EPS";
     private String grammarName;
     private String header = "";
     private String members = "";
@@ -53,7 +54,16 @@ public class Generator {
             @Override
             public void enterTermRuleLabel(GrammarOfGrammarParser.TermRuleLabelContext ctx) {
                 Rule rule = addTerminalRule(ctx.TERM_NAME().getText());
-                // TODO
+                for (GrammarOfGrammarParser.TerminalProductionContext productionContext : ctx.terminalProduction()) {
+                    Production production = new Production();
+                    String text = "";
+                    for (TerminalNode term : productionContext.STRING()) {
+                        String str = term.getText();
+                        text += str.substring(1, str.length() - 1);
+                    }
+                    production.addRule(new Rule(text));
+                    rule.addProduction(production);
+                }
             }
 
             @Override
@@ -64,12 +74,43 @@ public class Generator {
                         rule.addLocalAttr(localAttr.attrName().getText(), localAttr.attrType().getText());
                     }
                 }
-                if (ctx.returnedAttrs() != null) {
-                    for (GrammarOfGrammarParser.AttrContext returnedAttr : ctx.returnedAttrs().attr()) {
-                        rule.addReturnedAttr(returnedAttr.attrName().getText(), returnedAttr.attrType().getText());
-                    }
+                if (ctx.returnedAttr() != null) {
+                    rule.setReturnedType(ctx.returnedAttr().attr().attrType().getText());
+                    rule.setReturnedVarName(ctx.returnedAttr().attr().attrName().getText());
                 }
-                // TODO
+                for (GrammarOfGrammarParser.NonTerminalProductionContext productionContext : ctx.nonTerminalProduction()) {
+                    Production production = new Production();
+                    if (productionContext.nonTermVariations().isEmpty()) {
+                        production.addRule(addTerminalRule(EPS));
+                    }
+                    for (GrammarOfGrammarParser.NonTermVariationsContext variationsContext : productionContext.nonTermVariations()) {
+                        Rule productionRule;
+                        if (variationsContext.TERM_NAME() != null) {
+                            productionRule = new Rule(variationsContext.TERM_NAME().getText());
+                            if (variationsContext.ASTERISK() != null) {
+                                productionRule.setMark(Rule.Mark.ASTERISK);
+                            } else if (variationsContext.PLUS() != null) {
+                                productionRule.setMark(Rule.Mark.PLUS);
+                            } else if (variationsContext.QUESTION_MARK() != null) {
+                                productionRule.setMark(Rule.Mark.QUESTION_MARK);
+                            }
+                        } else if (variationsContext.NON_TERM_NAME() != null) {
+                            productionRule = new Rule(variationsContext.NON_TERM_NAME().getText());
+                            if (variationsContext.args() != null) {
+                                for (GrammarOfGrammarParser.AttrNameContext attrName : variationsContext.args().attrName()) {
+                                    productionRule.addArg(attrName.getText());
+                                }
+                            }
+                        } else {
+                            throw new RuntimeException("Unexpected variationsContext");
+                        }
+                        production.addRule(productionRule);
+                    }
+                    if (productionContext.JAVA_CODE() != null) {
+                        production.setJavaCode(convertBlockToJavaCode(productionContext.JAVA_CODE()));
+                    }
+                    rule.addProduction(production);
+                }
             }
         };
         walker.walk(listener, parser.gram());
@@ -77,6 +118,7 @@ public class Generator {
             throw new RuntimeException("No such rule: " + startRule);
         }
 
+        // Debug info
         System.err.println("TERMINAL RULES:");
         terminals.values().forEach(System.err::println);
         System.err.println("NON_TERMINAL RULES:");
