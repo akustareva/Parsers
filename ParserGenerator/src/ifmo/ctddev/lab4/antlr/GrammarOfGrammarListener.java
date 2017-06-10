@@ -72,15 +72,15 @@ public interface GrammarOfGrammarListener extends ParseTreeListener {
 	 */
 	void exitLocalAttrs(GrammarOfGrammarParser.LocalAttrsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#returnedAttr}.
+	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#returnedAttrs}.
 	 * @param ctx the parse tree
 	 */
-	void enterReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx);
+	void enterReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#returnedAttr}.
+	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#returnedAttrs}.
 	 * @param ctx the parse tree
 	 */
-	void exitReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx);
+	void exitReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#nonterminalProduction}.
 	 * @param ctx the parse tree
@@ -121,6 +121,16 @@ public interface GrammarOfGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAttr(GrammarOfGrammarParser.AttrContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#args}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgs(GrammarOfGrammarParser.ArgsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GrammarOfGrammarParser#args}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgs(GrammarOfGrammarParser.ArgsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GrammarOfGrammarParser#attrType}.
 	 * @param ctx the parse tree

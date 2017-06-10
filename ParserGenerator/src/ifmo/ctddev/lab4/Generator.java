@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Generator {
     private String GEN_PATH = "src/ifmo/ctddev/lab4/generated/";
@@ -22,6 +24,8 @@ public class Generator {
     private String grammarName;
     private String header = "";
     private String members = "";
+    private Map<String, Rule> terminals = new HashMap<>();
+    private Map<String, Rule> nonTerminals = new HashMap<>();
 
     public Generator(File grammar, String startRule) throws IOException {
         grammarName = grammar.getName().split("[.]")[0];
@@ -44,6 +48,28 @@ public class Generator {
                 if (ctx.JAVA_CODE() != null) {
                     members = convertBlockToJavaCode(ctx.JAVA_CODE());
                 }
+            }
+
+            @Override
+            public void enterTermRuleLabel(GrammarOfGrammarParser.TermRuleLabelContext ctx) {
+                Rule rule = addTerminalRule(ctx.TERM_NAME().getText());
+
+            }
+
+            @Override
+            public void enterNonTermRuleLabel(GrammarOfGrammarParser.NonTermRuleLabelContext ctx) {
+                Rule rule = addNonTerminalRule(ctx.NON_TERM_NAME().getText());
+                if (ctx.localAttrs() != null) {
+                    for (GrammarOfGrammarParser.AttrContext localAttr : ctx.localAttrs().attr()) {
+                        rule.addLocalAttr(localAttr.attrName().getText(), localAttr.attrType().getText());
+                    }
+                }
+                if (ctx.returnedAttrs() != null) {
+                    for (GrammarOfGrammarParser.AttrContext returnedAttr : ctx.returnedAttrs().attr()) {
+                        rule.addReturnedAttr(returnedAttr.attrName().getText(), returnedAttr.attrType().getText());
+                    }
+                }
+
             }
         };
         walker.walk(listener, parser.gram());
@@ -78,6 +104,20 @@ public class Generator {
         out.println("\n}");
         out.close();
         return file;
+    }
+
+    private Rule addTerminalRule(String ruleName) {
+        if (!terminals.containsKey(ruleName)) {
+            terminals.put(ruleName, new Rule(ruleName));
+        }
+        return terminals.get(ruleName);
+    }
+
+    private Rule addNonTerminalRule(String ruleName) {
+        if (!nonTerminals.containsKey(ruleName)) {
+            nonTerminals.put(ruleName, new Rule(ruleName));
+        }
+        return nonTerminals.get(ruleName);
     }
 
     private String convertBlockToJavaCode(TerminalNode node) {

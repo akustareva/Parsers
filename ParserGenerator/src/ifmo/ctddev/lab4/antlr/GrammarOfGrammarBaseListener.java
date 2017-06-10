@@ -88,13 +88,13 @@ public class GrammarOfGrammarBaseListener implements GrammarOfGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx) { }
+	@Override public void enterReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReturnedAttr(GrammarOfGrammarParser.ReturnedAttrContext ctx) { }
+	@Override public void exitReturnedAttrs(GrammarOfGrammarParser.ReturnedAttrsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -143,6 +143,18 @@ public class GrammarOfGrammarBaseListener implements GrammarOfGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAttr(GrammarOfGrammarParser.AttrContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArgs(GrammarOfGrammarParser.ArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArgs(GrammarOfGrammarParser.ArgsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
