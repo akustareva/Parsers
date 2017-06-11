@@ -19,6 +19,7 @@ public class Generator {
     private String GEN_PATH = "src/ifmo/ctddev/lab4/generated/";
     private String LEXER = "Lexer";
     private String PARSER = "Parser";
+    private String TOKEN = "Token";
     private String JAVA_EXTENSION = ".java";
     private static final String EPS = "EPS";
     private static final String EOF = "EOF";
@@ -267,12 +268,12 @@ public class Generator {
     }
 
     private File generateTokens() throws FileNotFoundException {
-        String tokensName  = createLexerOrParserName(grammarName, "Tokens", JAVA_EXTENSION);
+        String tokensName  = createLexerOrParserName(grammarName, TOKEN, JAVA_EXTENSION);
         File file = new File(GEN_PATH, tokensName);
         file.getParentFile().mkdirs();
         PrintWriter out = new PrintWriter(file);
         out.println(header);
-        out.println("\npublic enum " + grammarName + "Tokens {");
+        out.println("\npublic enum " + grammarName + TOKEN +" {");
         StringJoiner joiner = new StringJoiner(", ", "\t", ";");
         terminals.keySet().forEach(joiner::add);
         out.println(joiner.toString());
@@ -282,13 +283,62 @@ public class Generator {
     }
 
     private File generateLexer() throws FileNotFoundException {
-        String lexerName  = createLexerOrParserName(grammarName, LEXER, JAVA_EXTENSION);
-        File file = new File(GEN_PATH, lexerName);
+        String lexerFileName  = createLexerOrParserName(grammarName, LEXER, JAVA_EXTENSION);
+        File file = new File(GEN_PATH, lexerFileName);
+        String lexerName = lexerFileName.split("[.]")[0];
+        String tokenName = grammarName + TOKEN;
         file.getParentFile().mkdirs();
         PrintWriter out = new PrintWriter(file);
         out.println(header);
-        out.println("\npublic class " + lexerName.split("[.]")[0] + " {");
-        out.println(members);
+        out.println("\npublic class " + lexerName + " {");
+        out.println("\tprivate String expression;");
+        out.println("\tprivate int pos;");
+        if (!members.isEmpty()) {
+            out.println(addPrefix("\t", members));
+        }
+        // Constructor(String)
+        out.println("\n\tpublic " + lexerName + "(String expression) {");
+        out.println("\t\tthis.expression = expression;");
+        out.println("\t\tthis.pos = 0;");
+        out.println("\t}");
+        // hasNextToken()
+        out.println("\n\tpublic boolean hasNextToken() {");
+        out.println("\t\twhile (pos < expression.length() && isBlank(expression.charAt(pos))) {");
+        out.println("\t\t\tpos++;");
+        out.println("\t\t}");
+        out.println("\t\treturn pos != expression.length();");
+        out.println("\t}");
+        // getNextToken()
+        out.println("\n\tpublic " + tokenName + " getNextToken() {");
+        out.println("\t\tif (!hasNextToken()) {");
+        out.println("\t\t\treturn " + tokenName + ".EOF;");
+        out.println("\t\t}");
+        Map<String, String> sortedTerminals = new TreeMap<>(Collections.reverseOrder());
+        for (Map.Entry<String, Rule> term : terminals.entrySet()) {
+            if (EPS.equals(term.getKey()) || EOF.equals(term.getKey())) {
+                continue;
+            }
+            for (Production production : term.getValue().getProductions()) {
+                sortedTerminals.put(production.getRules().get(0).getName(), term.getKey());
+            }
+        }
+        StringJoiner joiner = new StringJoiner("\t\t} else if ", "\t\tif ", "\t\t}");
+        for (Map.Entry<String, String> term : sortedTerminals.entrySet()) {
+            joiner.add("(expression.startsWith(\"" + term.getKey() + "\", pos)) {\n"
+                        + "\t\t\tpos += \"" + term.getKey() + "\".length();\n"
+                        + "\t\t\treturn " + tokenName + "." + term.getValue() + ";\n");
+        }
+        out.println(joiner.toString());
+        out.println("\t\tthrow new IllegalStateException(\"Unknown token from pos \" + pos);");
+        out.println("\t}");
+        // getPos()
+        out.println("\n\tpublic int getPos() {");
+        out.println("\t\treturn pos;");
+        out.println("\t}");
+        // isBlank(char)
+        out.println("\n\tprivate boolean isBlank(char c) {");
+        out.println("\t\treturn c == ' ' || c == '\\r' || c == '\\n' || c == '\\t';");
+        out.println("\t}");
         out.println("\n}");
         out.close();
         return file;
@@ -301,7 +351,7 @@ public class Generator {
         PrintWriter out = new PrintWriter(file);
         out.println(header);
         out.println("\npublic class " + parserName.split("[.]")[0] + " {");
-        out.println(members);
+        out.println(addPrefix("\t", members));
         out.println("\n}");
         out.close();
         return file;
@@ -327,6 +377,14 @@ public class Generator {
             return javaCode.substring(1, javaCode.length() - 1).trim();
         }
         return javaCode;
+    }
+
+    private String addPrefix(String prefix, String str) {
+        StringBuilder builder = new StringBuilder();
+        for (String s : str.split("\\n")) {
+            builder.append(prefix).append(s);
+        }
+        return builder.toString();
     }
 
     private String createLexerOrParserName(String prefix, String type, String extension) {
