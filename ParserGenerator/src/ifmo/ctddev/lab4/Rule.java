@@ -52,6 +52,10 @@ public class Rule {
         productions.add(production);
     }
 
+    public List<Production> getProductions() {
+        return productions;
+    }
+
     public void addArg(String arg) {
         args.add(arg);
     }
@@ -66,6 +70,10 @@ public class Rule {
 
     public Mark getMark() {
         return mark;
+    }
+
+    public boolean isTerminal() {
+        return (name.charAt(0) >= 'A' && name.charAt(0) <= 'Z');
     }
 
     @Override
