@@ -80,8 +80,7 @@ public class Generator {
                     }
                 }
                 if (ctx.returnedAttr() != null) {
-                    rule.setReturnedType(ctx.returnedAttr().attr().attrType().getText());
-                    rule.setReturnedVarName(ctx.returnedAttr().attr().attrName().getText());
+                    rule.setReturnedType(ctx.returnedAttr().attrType().getText());
                 }
                 for (GrammarOfGrammarParser.NonTerminalProductionContext productionContext : ctx.nonTerminalProduction()) {
                     Production production = new Production();
@@ -92,18 +91,11 @@ public class Generator {
                         Rule productionRule;
                         if (variationsContext.TERM_NAME() != null) {
                             productionRule = new Rule(variationsContext.TERM_NAME().getText());
-                            if (variationsContext.ASTERISK() != null) {
-                                productionRule.setMark(Rule.Mark.ASTERISK);
-                            } else if (variationsContext.PLUS() != null) {
-                                productionRule.setMark(Rule.Mark.PLUS);
-                            } else if (variationsContext.QUESTION_MARK() != null) {
-                                productionRule.setMark(Rule.Mark.QUESTION_MARK);
-                            }
                         } else if (variationsContext.NON_TERM_NAME() != null) {
                             productionRule = new Rule(variationsContext.NON_TERM_NAME().getText());
                             if (variationsContext.args() != null) {
-                                for (GrammarOfGrammarParser.AttrNameContext attrName : variationsContext.args().attrName()) {
-                                    productionRule.addArg(attrName.getText());
+                                for (TerminalNode attr: variationsContext.args().JAVA_CODE()) {
+                                    productionRule.addArg(convertBlockToJavaCode(attr));
                                 }
                             }
                         } else {
@@ -265,6 +257,11 @@ public class Generator {
         }
 
         File parser = generateParser();
+
+        System.err.println("CREATED FILES:");
+        System.err.println("\t" + tokens.getPath());
+        System.err.println("\t" + lexer.getPath());
+        System.err.println("\t" + parser.getPath());
     }
 
     private File generateTokens() throws FileNotFoundException {
@@ -292,6 +289,7 @@ public class Generator {
         out.println(header);
         out.println("\npublic class " + lexerName + " {");
         out.println("\tprivate String expression;");
+        out.println("\tprivate String lastTokenText;");
         out.println("\tprivate int pos;");
         if (!members.isEmpty()) {
             out.println(addPrefix("\t", members));
@@ -326,6 +324,7 @@ public class Generator {
         for (Map.Entry<String, String> term : sortedTerminals.entrySet()) {
             joiner.add("(expression.startsWith(\"" + term.getKey() + "\", pos)) {\n"
                         + "\t\t\tpos += \"" + term.getKey() + "\".length();\n"
+                        + "\t\t\tlastTokenText = \"" + term.getKey() + "\";\n"
                         + "\t\t\treturn " + tokenName + "." + term.getValue() + ";\n");
         }
         out.println(joiner.toString());
@@ -334,6 +333,10 @@ public class Generator {
         // getPos()
         out.println("\n\tpublic int getPos() {");
         out.println("\t\treturn pos;");
+        out.println("\t}");
+        // getLastTokenText()
+        out.println("\n\tpublic String getLastTokenText() {");
+        out.println("\t\treturn lastTokenText;");
         out.println("\t}");
         // isBlank(char)
         out.println("\n\tprivate boolean isBlank(char c) {");
@@ -345,13 +348,49 @@ public class Generator {
     }
 
     private File generateParser() throws FileNotFoundException {
-        String parserName  = createLexerOrParserName(grammarName, PARSER, JAVA_EXTENSION);
-        File file = new File(GEN_PATH, parserName);
+        String parserFileName  = createLexerOrParserName(grammarName, PARSER, JAVA_EXTENSION);
+        String parserName = parserFileName.split("[.]")[0];
+        String lexerName = grammarName + LEXER;
+        String tokenName = grammarName + TOKEN;
+        File file = new File(GEN_PATH, parserFileName);
         file.getParentFile().mkdirs();
         PrintWriter out = new PrintWriter(file);
         out.println(header);
-        out.println("\npublic class " + parserName.split("[.]")[0] + " {");
-        out.println(addPrefix("\t", members));
+        out.println("\npublic class " + parserName + " {");
+        out.println("\tprivate " + lexerName + " lexer;");
+        if (!members.isEmpty()) {
+            out.println(addPrefix("\t", members));
+        }
+        // Constructor(String)
+        out.println("\n\tpublic " + parserName + "(String expression) {");
+        out.println("\t\tthis.lexer = new " + lexerName + "(expression);");
+        out.println("\t}");
+        // parse()
+        out.println("\n\tpublic " + nonTerminals.get(startRule).getReturnedType().toString()  + " parse() {");
+        out.println("\t\treturn " + startRule + "();");
+        out.println("\t}");
+        for (Map.Entry<String, Rule> nonTerm : nonTerminals.entrySet()) {
+            String nonTermName = nonTerm.getKey();
+            Rule nonTermRule = nonTerm.getValue();
+            Set<String> setOfTerms = new HashSet<>(firstSet.get(nonTermName));
+            if (setOfTerms.contains(EPS)) {
+                setOfTerms.addAll(followSet.get(nonTermName));
+                setOfTerms.remove(EPS);
+            }
+            out.println("\n\tprivate " + nonTermRule.getReturnedType().toString() + " " + nonTermName +
+                    nonTermRule.getLocalAttrsInString() + "{");
+            out.println("\t\t" + tokenName + " token = lexer.getNextToken();");
+            StringJoiner joiner = new StringJoiner("\t\t} else if ", "\t\tif ", "\t\t}");
+            for (String term : setOfTerms) {
+                String body = "";
+                // TODO
+                joiner.add("(" + tokenName + "." + term + " == token) {\n" +
+                        "\t\t\t" + body + "\n");
+            }
+            out.println(joiner.toString());
+            out.println("\t\tthrow new AssertionError();");
+            out.println("\t}");
+        }
         out.println("\n}");
         out.close();
         return file;

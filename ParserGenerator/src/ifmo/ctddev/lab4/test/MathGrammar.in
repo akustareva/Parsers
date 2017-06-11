@@ -2,27 +2,27 @@
 package ifmo.ctddev.lab4.generated;
 }
 
-expr [Integer val]
-    : term sum
+expr [Integer]
+    : term sum({_term1})            {return _sum1;}
     ;
 
-sum(Integer i) [Integer val]
-    :
-    | PLUS term sum
+sum(Integer i) [Integer]
+    :                               {return i;}
+    | PLUS term sum({i + _term1})   {return _sum1;}
     ;
 
-term [Integer val]
-    : fact mul
+term [Integer]
+    : fact mul({_fact1})            {return _mul1;}
     ;
 
-mul(Integer i) [Integer val]
-    :
-    | MUL fact mul
+mul(Integer i) [Integer]
+    :                               {return i;}
+    | MUL fact mul({i * _fact1})    {return _mul1;}
     ;
 
-fact [Integer val]
-    : L_PAR expr R_PAR
-    | NUMBER
+fact [Integer]
+    : L_PAR expr R_PAR              {return _expr1;}
+    | NUMBER                        {return Integer.parseInt(NUMBER.text);}
     ;
 
 NUMBER

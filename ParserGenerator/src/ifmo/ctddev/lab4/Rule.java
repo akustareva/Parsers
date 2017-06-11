@@ -5,12 +5,10 @@ import java.util.*;
 public class Rule {
     private String name;
     private Type returnedType = Type.VOID;
-    private String returnedVarName;
     private Map<String, Type> localAttrs = new HashMap<>();
     private List<Production> productions = new ArrayList<>();
 
-    private List<String> args;
-    private Mark mark;
+    private List<String> args = new ArrayList<>();
 
     public Rule(String name) {
         this.name = name;
@@ -24,16 +22,19 @@ public class Rule {
         localAttrs.put(name, type);
     }
 
+    public String getLocalAttrsInString() {
+        if (!localAttrs.isEmpty()) {
+            StringJoiner joiner = new StringJoiner(", ", "(", ") ");
+            for (Map.Entry<String, Type> attr : localAttrs.entrySet()) {
+                joiner.add(attr.getValue() + " " + attr.getKey());
+            }
+            return joiner.toString();
+        }
+        return "() ";
+    }
+
     public void addLocalAttr(String name, String type) {
         addLocalAttr(name, Type.getTypeByName(type));
-    }
-
-    public void setReturnedVarName(String varName) {
-        this.returnedVarName = varName;
-    }
-
-    public String getReturnedVarName() {
-        return returnedVarName;
     }
 
     public void setReturnedType(Type returnedType) {
@@ -64,34 +65,19 @@ public class Rule {
         return args;
     }
 
-    public void setMark(Mark mark) {
-        this.mark = mark;
-    }
-
-    public Mark getMark() {
-        return mark;
-    }
-
     public boolean isTerminal() {
         return (name.charAt(0) >= 'A' && name.charAt(0) <= 'Z');
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder(name);
-        StringJoiner joiner;
-        if (!localAttrs.isEmpty()) {
-            joiner = new StringJoiner(", ", " (", ") ");
-            for (Map.Entry<String, Type> attr : localAttrs.entrySet()) {
-                joiner.add(attr.getValue() + " " + attr.getKey());
-            }
-            builder.append(joiner.toString());
-        }
+        StringBuilder builder = new StringBuilder(name).append(" ");
+        builder.append(getLocalAttrsInString());
         if (returnedType != Type.VOID) {
-            builder.append("[").append(returnedType.toString()).append(" ").append(returnedVarName).append("]");
+            builder.append("[").append(returnedType.toString()).append("]");
         }
         builder.append(" : ");
-        joiner = new StringJoiner(" | ", "", "");
+        StringJoiner  joiner = new StringJoiner(" | ", "", "");
         for (Production production : productions) {
             joiner.add(production.toString());
         }
@@ -125,23 +111,6 @@ public class Rule {
         @Override
         public String toString() {
             return type;
-        }
-    }
-
-    public enum Mark {
-        ASTERISK("*"),
-        PLUS("+"),
-        QUESTION_MARK("?");
-
-        private String mark;
-
-        private Mark(String mark) {
-            this.mark = mark;
-        }
-
-        @Override
-        public String toString() {
-            return mark;
         }
     }
 }

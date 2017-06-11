@@ -22,7 +22,7 @@ localAttrs
     ;
 
 returnedAttr
-    : SQUARE_BR_LEFT attr SQUARE_BR_RIGHT
+    : SQUARE_BR_LEFT attrType SQUARE_BR_RIGHT
     ;
 
 nonTerminalProduction
@@ -30,7 +30,7 @@ nonTerminalProduction
     ;
 
 nonTermVariations
-    : TERM_NAME (ASTERISK | PLUS | QUESTION_MARK)?
+    : TERM_NAME
     | NON_TERM_NAME args?
     ;
 
@@ -43,7 +43,7 @@ attr
     ;
 
 args
-    : LEFT_PARENTHESIS attrName (COMMA attrName)* RIGHT_PARENTHESIS
+    : LEFT_PARENTHESIS JAVA_CODE (COMMA JAVA_CODE)* RIGHT_PARENTHESIS
     ;
 
 attrType
