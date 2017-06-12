@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 }
 
 gram
-    : next
+    : next({1}, {2})
     ;
 
 next (Integer a, String b) [String code]

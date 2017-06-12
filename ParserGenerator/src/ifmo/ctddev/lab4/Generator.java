@@ -379,6 +379,7 @@ public class Generator {
         out.println("\t\tlexer.getNextToken();");
         out.println("\t\t" + (startRuleReturnType  == Rule.Type.VOID ? "" : "return ") + startRule + "();");
         out.println("\t}");
+        // other methods
         for (Map.Entry<String, Rule> nonTerm : nonTerminals.entrySet()) {
             String nonTermName = nonTerm.getKey();
             Rule nonTermRule = nonTerm.getValue();
@@ -436,7 +437,6 @@ public class Generator {
                     if (suitableProduction.getJavaCode() != null) {
                         body += suitableProduction.getJavaCode();
                     }
-                    // TODO
                 }
                 joiner.add("(" + tokenName + "." + term + " == token) {\n" + addPrefix("\t\t\t", body) + "\n");
             }
