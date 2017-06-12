@@ -22,7 +22,7 @@ mul(Integer i) [Integer]
 
 fact [Integer]
     : L_PAR expr R_PAR              {return _expr1;}
-    | NUMBER                        {return Integer.parseInt(NUMBER.text);}
+    | NUMBER                        {return Integer.parseInt(_NUMBER1);}
     ;
 
 NUMBER

@@ -2,7 +2,8 @@ package ifmo.ctddev.lab4.generated;
 
 public class MathGrammarLexer {
 	private String expression;
-	private String lastTokenText;
+	private MathGrammarToken currentToken;
+	private String currentTokenText;
 	private int pos;
 
 	public MathGrammarLexer(String expression) {
@@ -19,74 +20,94 @@ public class MathGrammarLexer {
 
 	public MathGrammarToken getNextToken() {
 		if (!hasNextToken()) {
+			currentToken = MathGrammarToken.EOF;
+			currentTokenText = "";
 			return MathGrammarToken.EOF;
 		}
 		if (expression.startsWith("9", pos)) {
 			pos += "9".length();
-			lastTokenText = "9";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "9";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("8", pos)) {
 			pos += "8".length();
-			lastTokenText = "8";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "8";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("7", pos)) {
 			pos += "7".length();
-			lastTokenText = "7";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "7";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("6", pos)) {
 			pos += "6".length();
-			lastTokenText = "6";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "6";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("5", pos)) {
 			pos += "5".length();
-			lastTokenText = "5";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "5";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("4", pos)) {
 			pos += "4".length();
-			lastTokenText = "4";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "4";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("3", pos)) {
 			pos += "3".length();
-			lastTokenText = "3";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "3";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("2", pos)) {
 			pos += "2".length();
-			lastTokenText = "2";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "2";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("1", pos)) {
 			pos += "1".length();
-			lastTokenText = "1";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "1";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("0", pos)) {
 			pos += "0".length();
-			lastTokenText = "0";
+			currentToken = MathGrammarToken.NUMBER;
+			currentTokenText = "0";
 			return MathGrammarToken.NUMBER;
 		} else if (expression.startsWith("+", pos)) {
 			pos += "+".length();
-			lastTokenText = "+";
+			currentToken = MathGrammarToken.PLUS;
+			currentTokenText = "+";
 			return MathGrammarToken.PLUS;
 		} else if (expression.startsWith("*", pos)) {
 			pos += "*".length();
-			lastTokenText = "*";
+			currentToken = MathGrammarToken.MUL;
+			currentTokenText = "*";
 			return MathGrammarToken.MUL;
 		} else if (expression.startsWith(")", pos)) {
 			pos += ")".length();
-			lastTokenText = ")";
+			currentToken = MathGrammarToken.R_PAR;
+			currentTokenText = ")";
 			return MathGrammarToken.R_PAR;
 		} else if (expression.startsWith("(", pos)) {
 			pos += "(".length();
-			lastTokenText = "(";
+			currentToken = MathGrammarToken.L_PAR;
+			currentTokenText = "(";
 			return MathGrammarToken.L_PAR;
 		}
 		throw new IllegalStateException("Unknown token from pos " + pos);
+	}
+
+	public MathGrammarToken getCurrentToken() {
+		return currentToken;
 	}
 
 	public int getPos() {
 		return pos;
 	}
 
-	public String getLastTokenText() {
-		return lastTokenText;
+	public String getCurrentTokenText() {
+		return currentTokenText;
 	}
 
 	private boolean isBlank(char c) {

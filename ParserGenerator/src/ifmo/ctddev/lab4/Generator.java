@@ -289,7 +289,8 @@ public class Generator {
         out.println(header);
         out.println("\npublic class " + lexerName + " {");
         out.println("\tprivate String expression;");
-        out.println("\tprivate String lastTokenText;");
+        out.println("\tprivate " + tokenName + " currentToken;");
+        out.println("\tprivate String currentTokenText;");
         out.println("\tprivate int pos;");
         if (!members.isEmpty()) {
             out.println(addPrefix("\t", members));
@@ -309,6 +310,8 @@ public class Generator {
         // getNextToken()
         out.println("\n\tpublic " + tokenName + " getNextToken() {");
         out.println("\t\tif (!hasNextToken()) {");
+        out.println("\t\t\tcurrentToken = MathGrammarToken.EOF;");
+        out.println("\t\t\tcurrentTokenText = \"\";");
         out.println("\t\t\treturn " + tokenName + ".EOF;");
         out.println("\t\t}");
         Map<String, String> sortedTerminals = new TreeMap<>(Collections.reverseOrder());
@@ -324,19 +327,24 @@ public class Generator {
         for (Map.Entry<String, String> term : sortedTerminals.entrySet()) {
             joiner.add("(expression.startsWith(\"" + term.getKey() + "\", pos)) {\n"
                         + "\t\t\tpos += \"" + term.getKey() + "\".length();\n"
-                        + "\t\t\tlastTokenText = \"" + term.getKey() + "\";\n"
+                        + "\t\t\tcurrentToken = " + tokenName + "." + term.getValue() + ";\n"
+                        + "\t\t\tcurrentTokenText = \"" + term.getKey() + "\";\n"
                         + "\t\t\treturn " + tokenName + "." + term.getValue() + ";\n");
         }
         out.println(joiner.toString());
         out.println("\t\tthrow new IllegalStateException(\"Unknown token from pos \" + pos);");
         out.println("\t}");
+        // getCurrentToken()
+        out.println("\n\tpublic " + tokenName + " getCurrentToken() {");
+        out.println("\t\treturn currentToken;");
+        out.println("\t}");
         // getPos()
         out.println("\n\tpublic int getPos() {");
         out.println("\t\treturn pos;");
         out.println("\t}");
-        // getLastTokenText()
-        out.println("\n\tpublic String getLastTokenText() {");
-        out.println("\t\treturn lastTokenText;");
+        // getCurrentTokenText()
+        out.println("\n\tpublic String getCurrentTokenText() {");
+        out.println("\t\treturn currentTokenText;");
         out.println("\t}");
         // isBlank(char)
         out.println("\n\tprivate boolean isBlank(char c) {");
@@ -366,12 +374,15 @@ public class Generator {
         out.println("\t\tthis.lexer = new " + lexerName + "(expression);");
         out.println("\t}");
         // parse()
-        out.println("\n\tpublic " + nonTerminals.get(startRule).getReturnedType().toString()  + " parse() {");
-        out.println("\t\treturn " + startRule + "();");
+        Rule.Type startRuleReturnType = nonTerminals.get(startRule).getReturnedType();
+        out.println("\n\tpublic " + startRuleReturnType.toString()  + " parse() {");
+        out.println("\t\tlexer.getNextToken();");
+        out.println("\t\t" + (startRuleReturnType  == Rule.Type.VOID ? "" : "return ") + startRule + "();");
         out.println("\t}");
         for (Map.Entry<String, Rule> nonTerm : nonTerminals.entrySet()) {
             String nonTermName = nonTerm.getKey();
             Rule nonTermRule = nonTerm.getValue();
+            List<Production> productions = nonTermRule.getProductions();
             Set<String> setOfTerms = new HashSet<>(firstSet.get(nonTermName));
             if (setOfTerms.contains(EPS)) {
                 setOfTerms.addAll(followSet.get(nonTermName));
@@ -379,13 +390,55 @@ public class Generator {
             }
             out.println("\n\tprivate " + nonTermRule.getReturnedType().toString() + " " + nonTermName +
                     nonTermRule.getLocalAttrsInString() + "{");
-            out.println("\t\t" + tokenName + " token = lexer.getNextToken();");
+            out.println("\t\t" + tokenName + " token = lexer.getCurrentToken();");
             StringJoiner joiner = new StringJoiner("\t\t} else if ", "\t\tif ", "\t\t}");
             for (String term : setOfTerms) {
                 String body = "";
-                // TODO
-                joiner.add("(" + tokenName + "." + term + " == token) {\n" +
-                        "\t\t\t" + body + "\n");
+                Production suitableProduction = null;
+                for (Production production : productions) {
+                    if (firstSet.get(production.getRules().get(0).getName()).contains(term)) {
+                        if (suitableProduction != null) {
+                            throw new RuntimeException("More than one production can start with the same term. Grammar is not LL(1)." +
+                                    "Productions: \n\t" + suitableProduction + "\n\t" + production);
+                        }
+                        suitableProduction = production;
+                    }
+                }
+                if (suitableProduction == null) {
+                    for (Production production : productions) {
+                        if (EPS.equals(production.getRules().get(0).getName())) {
+                            if (production.getJavaCode() != null) {
+                                body = production.getJavaCode();
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    List<Rule> productionRules = suitableProduction.getRules();
+                    Map<String, Integer> sameRulesCount = new HashMap<>();
+                    for (Rule rule : productionRules) {
+                        if (!sameRulesCount.containsKey(rule.getName())) {
+                            sameRulesCount.put(rule.getName(), 1);
+                        } else {
+                            sameRulesCount.put(rule.getName(), sameRulesCount.get(rule.getName()) + 1);
+                        }
+                        String varName = createVarFromRuleName(rule, sameRulesCount.get(rule.getName()));
+                        if (rule.isTerminal()) {
+                            body += ("String " + varName + " = lexer.getCurrentTokenText();\n");
+                            body += "lexer.getNextToken();\n";
+                        } else {
+                            Rule ruleWithInfo = nonTerminals.get(rule.getName());
+                            Rule.Type ruleReturnType = ruleWithInfo.getReturnedType();
+                            body += ((ruleReturnType == Rule.Type.VOID ? "" : ruleReturnType.toString() + " " + varName + " = ")
+                                            + rule.getName() + rule.getArgsInString() + ";\n");
+                        }
+                    }
+                    if (suitableProduction.getJavaCode() != null) {
+                        body += suitableProduction.getJavaCode();
+                    }
+                    // TODO
+                }
+                joiner.add("(" + tokenName + "." + term + " == token) {\n" + addPrefix("\t\t\t", body) + "\n");
             }
             out.println(joiner.toString());
             out.println("\t\tthrow new AssertionError();");
@@ -419,11 +472,17 @@ public class Generator {
     }
 
     private String addPrefix(String prefix, String str) {
-        StringBuilder builder = new StringBuilder();
+        StringJoiner joiner = new StringJoiner("\n");
         for (String s : str.split("\\n")) {
-            builder.append(prefix).append(s);
+            if (!s.isEmpty()) {
+                joiner.add(prefix + s);
+            }
         }
-        return builder.toString();
+        return joiner.toString();
+    }
+
+    private String createVarFromRuleName(Rule rule, int num) {
+        return "_" + rule.getName() + String.valueOf(num);
     }
 
     private String createLexerOrParserName(String prefix, String type, String extension) {

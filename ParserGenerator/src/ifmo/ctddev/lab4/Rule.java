@@ -65,6 +65,12 @@ public class Rule {
         return args;
     }
 
+    public String getArgsInString() {
+        StringJoiner joiner = new StringJoiner(", ", "(", ")");
+        args.forEach(joiner::add);
+        return joiner.toString();
+    }
+
     public boolean isTerminal() {
         return (name.charAt(0) >= 'A' && name.charAt(0) <= 'Z');
     }
