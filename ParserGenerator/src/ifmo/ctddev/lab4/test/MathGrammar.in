@@ -12,12 +12,21 @@ sum(Integer i) [Integer]
     ;
 
 term [Integer]
-    : fact mul({_fact1})            {return _mul1;}
+    : pterm mul({_pterm1})            {return _mul1;}
     ;
 
 mul(Integer i) [Integer]
-    :                               {return i;}
-    | MUL fact mul({i * _fact1})    {return _mul1;}
+    :                                 {return i;}
+    | MUL pterm mul({i * _pterm1})    {return _mul1;}
+    ;
+
+pterm [Integer]
+    : fact pow({_fact1})               {return _pow1;}
+    ;
+
+pow(Integer i) [Integer]
+    :                                             {return i;}
+    | POW pterm pow({(int) Math.pow(i, _pterm1)})   {return _pow1;}
     ;
 
 fact [Integer]
@@ -35,6 +44,10 @@ PLUS
 
 MUL
     : '*'
+    ;
+
+POW
+    : '^'
     ;
 
 L_PAR

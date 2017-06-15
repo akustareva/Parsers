@@ -133,38 +133,40 @@ public class Generator {
             firstSet.put(term, new HashSet<>(Collections.singletonList(term)));
         }
         boolean changed = false;
-        do {
-            changed = false;
-            for (Map.Entry<String, Rule> nonTermEntry : nonTerminals.entrySet()) {
-                String nonTermName = nonTermEntry.getKey();
-                Rule nonTernRule = nonTermEntry.getValue();
-                List<Production> productions = nonTernRule.getProductions();
-                HashSet<String> values = new HashSet<>();
-                for (Production production : productions) {
-                    List<Rule> productionRules = production.getRules();
-                    int i = 0;
-                    while (i < productionRules.size() && isEpsRule(productionRules.get(i))) {
-                        if (firstSet.get(productionRules.get(i).getName()) != null) {
-                            values.addAll(firstSet.get(productionRules.get(i).getName()));
+        for (Map.Entry<String, Rule> rep : nonTerminals.entrySet()) {
+            do {
+                changed = false;
+                for (Map.Entry<String, Rule> nonTermEntry : nonTerminals.entrySet()) {
+                    String nonTermName = nonTermEntry.getKey();
+                    Rule nonTernRule = nonTermEntry.getValue();
+                    List<Production> productions = nonTernRule.getProductions();
+                    HashSet<String> values = new HashSet<>();
+                    for (Production production : productions) {
+                        List<Rule> productionRules = production.getRules();
+                        int i = 0;
+                        while (i < productionRules.size() && isEpsRule(productionRules.get(i))) {
+                            if (firstSet.get(productionRules.get(i).getName()) != null) {
+                                values.addAll(firstSet.get(productionRules.get(i).getName()));
+                            }
+                            i++;
                         }
-                        i++;
+                        if (i < productionRules.size()) {
+                            if (firstSet.get(productionRules.get(i).getName()) != null) {
+                                values.addAll(firstSet.get(productionRules.get(i).getName()));
+                            }
+                        } else {
+                            values.add(EPS);
+                        }
                     }
-                    if (i < productionRules.size()) {
-                        if (firstSet.get(productionRules.get(i).getName()) != null) {
-                            values.addAll(firstSet.get(productionRules.get(i).getName()));
-                        }
+                    if (!firstSet.containsKey(nonTermName)) {
+                        firstSet.put(nonTermName, values);
+                        changed = true;
                     } else {
-                        values.add(EPS);
+                        changed = firstSet.get(nonTermName).addAll(values);
                     }
                 }
-                if (!firstSet.containsKey(nonTermName)) {
-                    firstSet.put(nonTermName, values);
-                    changed = true;
-                } else {
-                    changed = firstSet.get(nonTermName).addAll(values);
-                }
-            }
-        } while (changed);
+            } while (changed);
+        }
     }
 
     // Algorithm from p. 287

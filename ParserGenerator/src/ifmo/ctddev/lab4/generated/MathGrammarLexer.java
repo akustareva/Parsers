@@ -24,7 +24,12 @@ public class MathGrammarLexer {
 			currentTokenText = "";
 			return MathGrammarToken.EOF;
 		}
-		if (expression.startsWith("9", pos)) {
+		if (expression.startsWith("^", pos)) {
+			pos += "^".length();
+			currentToken = MathGrammarToken.POW;
+			currentTokenText = "^";
+			return MathGrammarToken.POW;
+		} else if (expression.startsWith("9", pos)) {
 			pos += "9".length();
 			currentToken = MathGrammarToken.NUMBER;
 			currentTokenText = "9";
